@@ -3,12 +3,22 @@ import requests
 import uuid
 from supabase import create_client, Client
 
-SUPABASE_URL = "YOUR_SUPABASE_URL"
-SUPABASE_KEY = "YOUR_SUPABASE_KEY"
+
+# Hàm đọc nội dung từ file văn bản
+def rfile(name_file):
+    try:
+        with open(name_file, "r", encoding="utf-8") as file:
+            return file.read()
+    except FileNotFoundError:
+            st.error(f"File {name_file} không tồn tại.")
+
+
+# Constants
+WEBHOOK_URL = rfile("WEBHOOK_URL.txt").strip()
+SUPABASE_URL = rfile("SUPABASE_URL.txt").strip()
+SUPABASE_KEY = rfile("SUPABASE_KEY.txt").strip()
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-WEBHOOK_URL = "YOUR_WEB_HOOK_N8N_URL"
 
 def rfile(name_file):
     try:
@@ -36,11 +46,9 @@ def signup(email: str, password: str):
         st.error(f"Đăng ký thất bại: {str(e)}")
         return None
 
-def send_message_to_llm(session_id: str, message: str, access_token : str):
-    print(f"Access Token: {access_token}")
-
+def send_message_to_llm(session_id, message, access_token):
     headers = {
-        "Authorization": f"Bearer {access_token }",
+        "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json"
     }
     payload = {
@@ -48,22 +56,14 @@ def send_message_to_llm(session_id: str, message: str, access_token : str):
         "chatInput": message
     }
     try:
-        response = requests.post(WEBHOOK_URL, json=payload, headers=headers, timeout=20)
-        print(f"response: " , response)
+        response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
         response.raise_for_status()
-        print(f"response.status_code: {response.json()}")
-        print(f"response.text: {response.text}")
-        return response.json().get("output", "Không nhận được phản hồi từ LLM.")
-    except requests.exceptions.HTTPError as http_err:
-        return f"Lỗi: Lỗi HTTP - {http_err} - {response.text}"
-    except requests.exceptions.ConnectionError as conn_err:
-        return f"Lỗi: Không thể kết nối đến LLM - Lỗi kết nối - {conn_err}"
-    except requests.exceptions.Timeout as timeout_err:
-        return f"Lỗi: Không thể kết nối đến LLM - Hết thời gian chờ - {timeout_err}"
-    except requests.exceptions.RequestException as req_err:
-        return f"Lỗi: Không thể kết nối đến LLM - {req_err}"
-    except ValueError as json_err:
-        return f"Lỗi: Không thể giải mã phản hồi LLM - {json_err} - Phản hồi: {response.text if 'response' in locals() else 'Không có'}"
+        response_data = response.json()
+        print("Response status code:", response)  # In ra mã trạng thái HTTP
+        print("Full response:", response_data)  # In ra toàn bộ dữ liệu trả về
+        return response_data.get("output", "No output received") # Trả về "output"
+    except requests.exceptions.RequestException as e:
+        return f"Error: Failed to connect to the LLM - {str(e)}"
 
 
 def init_session_state():
@@ -111,7 +111,6 @@ def auth_ui():
                         st.error("Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập hoặc thử lại.")
                         if hasattr(auth_response, 'error') and auth_response.error:
                              st.error(f"Chi tiết: {auth_response.error.message}")
-
 
     with tab2:
         st.subheader("Đăng ký")
@@ -235,8 +234,9 @@ def main():
 if __name__ == "__main__":
     if not SUPABASE_KEY:
          try:
-             SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-             supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+            #SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+            SUPABASE_KEY = rfile("SUPABASE_KEY.txt").strip()
+            supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
          except (FileNotFoundError, KeyError):
             st.error("Không tìm thấy khóa Supabase. Vui lòng cấu hình trong Streamlit secrets hoặc trực tiếp trong script để kiểm thử cục bộ (không khuyến nghị cho productie).")
             st.stop()
