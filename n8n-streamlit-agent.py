@@ -174,15 +174,12 @@ def main():
                     margin-bottom: 10px;
                 }
                 .assistant {
-                    padding: 10px 15px;
-                    border-radius: 15px;
                     max-width: 70%;
-                    background-color: #f0f0f0;
-                    color: #333;
+                    color: #fff;
                     text-align: left;
                     align-self: flex-start;
                     margin-right: auto;
-                    border-bottom-left-radius: 0px;
+                    
                 }
                 .user {
                     padding: 10px 15px;
@@ -196,8 +193,8 @@ def main():
                 }
                 .stAlert {
                     display:none;}
-                .assistant::before { content: "🤖 AI: "; font-weight: bold; }
-                .user::before { content: "👤 Bạn: "; font-weight: bold; }
+                .assistant::before { content: "🤖 "; font-weight: bold; }
+                .user::before { content: ""; }
             </style>
             """,
             unsafe_allow_html=True
