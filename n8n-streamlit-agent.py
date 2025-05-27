@@ -188,13 +188,14 @@ def main():
                     padding: 10px 15px;
                     border-radius: 15px;
                     max-width: 70%;
-                    background-color: #007bff;
                     color: white;
                     text-align: left;
                     align-self: flex-end;
                     margin-left: auto;
                     border-bottom-right-radius: 0px;
                 }
+                .stAlert {
+                    display:none;}
                 .assistant::before { content: "🤖 AI: "; font-weight: bold; }
                 .user::before { content: "👤 Bạn: "; font-weight: bold; }
             </style>
