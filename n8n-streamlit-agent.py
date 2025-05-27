@@ -187,9 +187,13 @@ def main():
                 display: none;
             }
             .stSidebar {
-                width: 177px !important;
-                min-width: 177px !important;
+                width: 150px !important;
+                min-width: 140px !important;
             }
+            [data-testid="stSidebarHeader"] {
+                padding-right: 0px !important;
+                }
+
             [data-testid="stSidebarUserContent"] {
                 position: relative;
                 bottom: 6%;
