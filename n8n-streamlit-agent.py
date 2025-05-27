@@ -158,43 +158,47 @@ def main():
             unsafe_allow_html=True
         )
 
-        st.sidebar.subheader("Thông tin người dùng")
-        if st.session_state.auth and st.session_state.auth.user:
-             st.sidebar.success(f"Đăng nhập với tên: {st.session_state.auth.user.email}")
-        st.sidebar.info(f"ID Phiên: {st.session_state.session_id}")
         if st.sidebar.button("Đăng xuất", key="logout_button"):
             handle_logout()
 
+        # Inject custom CSS for chat UI
         st.markdown(
             """
             <style>
-                .message-container {
-                    display: flex;
-                    flex-direction: column;
-                    margin-bottom: 10px;
-                }
-                .assistant {
-                    max-width: 70%;
-                    color: #fff;
-                    text-align: left;
-                    align-self: flex-start;
-                    margin-right: auto;
-                    
-                }
-                .user {
-                    padding: 10px 15px;
-                    border-radius: 15px;
-                    max-width: 70%;
-                    color: white;
-                    text-align: left;
-                    align-self: flex-end;
-                    margin-left: auto;
-                    border-bottom-right-radius: 0px;
-                }
-                .stAlert {
-                    display:none;}
-                .assistant::before { content: "🤖 "; font-weight: bold; }
-                .user::before { content: ""; }
+            .assistant {
+                padding: 10px;
+                border-radius: 10px;
+                max-width: 75%;
+                background: none;
+                text-align: left;
+            }
+            .user {
+                padding: 10px;
+                border-radius: 10px;
+                max-width: 75%;
+                background: none;
+                text-align: right;
+                margin-left: auto;
+            }
+            .stAlert {
+                display: none !important;
+            }
+            h3 {
+                display: none;
+            }
+            .stSidebar {
+                width: 177px !important;
+                min-width: 177px !important;
+            }
+            [data-testid="stSidebarUserContent"] {
+                position: relative;
+                bottom: 6%;
+                right: -4%;
+                padding: 0;
+                z-index: 100;
+                width: 94px;
+            }
+            .assistant::before { content: "🤖 "; font-weight: bold; }
             </style>
             """,
             unsafe_allow_html=True
