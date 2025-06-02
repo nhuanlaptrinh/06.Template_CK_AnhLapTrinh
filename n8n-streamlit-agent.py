@@ -139,15 +139,28 @@ def send_message_to_llm(session_id, message, access_token):
         "sessionId": session_id,
         "chatInput": message
     }
+    # try:
+    #     response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
+    #     response.raise_for_status()
+    #     response_data = response.json()
+    #     print("Response status code:", response)  
+    #     print("Full response:", response_data)  
+    #     return response_data.get("output", "No output received")  # Trả về "output"
+    # except requests.exceptions.RequestException as e:
+    #     return f"Error: Failed to connect to the LLM - {str(e)}"
+
+
     try:
-        response = requests.post(WEBHOOK_URL, json=payload, headers=headers)
+        response = requests.post(WEBHOOK_URL, json=payload, headers=headers, timeout=10)
         response.raise_for_status()
         response_data = response.json()
-        print("Response status code:", response)  
-        print("Full response:", response_data)  
-        return response_data.get("output", "No output received")  # Trả về "output"
+        print("Full response:", response_data)  # In ra toàn bộ dữ liệu trả về
+        return response_data[0].get("output", "No output received")  # Trả về "output"
+        # return response.json().get("output", "No output received")
     except requests.exceptions.RequestException as e:
         return f"Error: Failed to connect to the LLM - {str(e)}"
+
+
 
 def init_session_state():
     if "auth" not in st.session_state:
