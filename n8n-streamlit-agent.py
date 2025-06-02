@@ -15,9 +15,13 @@ def rfile(name_file):
         st.error(f"File {name_file} không tồn tại.")
 
 # Constants
-WEBHOOK_URL = rfile("WEBHOOK_URL.txt").strip()
-SUPABASE_URL = rfile("SUPABASE_URL.txt").strip()
-SUPABASE_KEY = rfile("SUPABASE_KEY.txt").strip()
+# WEBHOOK_URL = rfile("WEBHOOK_URL.txt").strip()
+# SUPABASE_URL = rfile("SUPABASE_URL.txt").strip()
+# SUPABASE_KEY = rfile("SUPABASE_KEY.txt").strip()
+
+WEBHOOK_URL = st.secrets.get("WEBHOOK_URL")
+SUPABASE_URL = st.secrets.get("SUPABASE_URL")
+SUPABASE_KEY = st.secrets.get("SUPABASE_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
