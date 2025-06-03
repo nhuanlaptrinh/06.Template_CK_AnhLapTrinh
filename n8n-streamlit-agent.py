@@ -25,6 +25,14 @@ SUPABASE_KEY = st.secrets.get("SUPABASE_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Khởi tạo tin nhắn "system" và "assistant"
+INITIAL_SYSTEM_MESSAGE = {"role": "system", "content": rfile("01.system_trainning.txt")}
+INITIAL_ASSISTANT_MESSAGE = {"role": "assistant", "content": rfile("02.assistant.txt")}
+
+if "messages" not in st.session_state:
+    st.session_state.messages = [INITIAL_SYSTEM_MESSAGE, INITIAL_ASSISTANT_MESSAGE]
+
+
 # File để lưu auth state
 AUTH_STATE_FILE = "auth_state.pkl"
 
@@ -285,8 +293,7 @@ def main():
             f"""<h1 style="text-align: center; font-size: 24px; margin-bottom: 20px;">{title_content}</h1>""",
             unsafe_allow_html=True
         )
-        st.markdown(f'''<div class="message-container"><div class="assistant" style=" ">Em Nhi ở đây để tư vấn về "Trợ Lý A.I".
-Sếp inbox nội dung cần tư vấn giúp em Nhi nhé !</div></div>''', unsafe_allow_html=True)
+        
         if st.sidebar.button("Đăng xuất", key="logout_button"):
             handle_logout()
 
